@@ -1,1 +1,29 @@
 package get_port
+
+import (
+	"net"
+)
+
+func GetFreePort() (int, error){
+	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
+	if err != nil {
+		return 0, err
+	}
+	l, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		return 0, err
+	}
+
+	defer l.Close()
+
+	return l.Addr().(*net.TCPAddr).Port, nil
+}
+
+func GetPort() int {
+	port, err := GetFreePort()
+	if err != nil {
+		panic(err)
+	}
+	return port
+}
+
